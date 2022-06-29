@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='js/table-shorting.js') }}"> -->
+
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"> -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/elo-table/boostrap-4.5.1.css') }}">
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"> -->
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+
+
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+    <script src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/diagram/chart.min.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='js/diagram/plotly-latest.min.js') }}"></script>   -->
+    
+		<title>{% block title %}{% endblock %}</title>
+	</head>
+
+  
+  
+  <body class="hero-anime">	
+    {% set roles = current_user.roles|string %}
+    {% if roles == 'RoleEnum.superadmin' %}
+    {% set roles = 'superadmin' %}
+    {% elif roles == 'RoleEnum.manager' %}
+    {% set roles = 'manager' %}
+    {% elif roles == 'RoleEnum.user' %}
+    {% set roles = 'user' %}
+    {% endif %}
+
+    <div class="navigation-wrap bg-light start-header start-style">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <nav class="navbar navbar-expand-md navbar-light">
+            
+              <!-- <a class="navbar-brand" href="#" target="_blank"><img src="{{ url_for('static', filename='image/logo.png') }}" alt=""></a>	 -->
+              <h1><a class="navbar-brand" style="font-size: 30px" href="home"><b>E-Document</b></a></h1>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto py-4 py-md-0">
+                  <!-- <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4 active">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Home</a>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                      <a class="dropdown-item" href="#">Something else here</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                    </div>
+                  </li> -->
+                  <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                    <a class="nav-link" href="home">Home</a>
+                  </li>
+                  <!-- <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dashboard</a>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="defect-process">Defect Per Process</a>
+                      <a class="dropdown-item" href="#">Comming Soon . .</a>
+                      <a class="dropdown-item" href="#">Comming Soon . .</a>
+                    </div>
+                  </li> -->
+                  {% if roles == 'superadmin' %}
+                  <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                    <a class="nav-link" href="tes">Admin</a>
+                  </li>
+                  {% endif %}
+                  <!-- <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                    <a class="nav-link" href="#">Journal</a>
+                  </li> -->
+                  <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                    <a class="nav-link" href="{{ url_for('autentikasi.logout') }}">Logout</a>
+                  </li>
+                  <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                  </li>
+                </ul>
+              </div>
+              
+            </nav>		
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <br><br><br>
+  <br><br><br>
+  
+  <div class="row">
+    <div class="col-11"> 
+    </div>
+    <div class="col-1"> 
+      <div id="switch">
+        <div id="circle"></div>
+      </div>
+    </div>
+  </div>
+  
+  
+
+  <script>
+    /* Please ❤ this if you like it! */
+    (function($) { "use strict";
+  
+    $(function() {
+      var header = $(".start-style");
+      $(window).scroll(function() {    
+        var scroll = $(window).scrollTop();
+      
+        if (scroll >= 10) {
+          header.removeClass('start-style').addClass("scroll-on");
+        } else {
+          header.removeClass("scroll-on").addClass('start-style');
+        }
+      });
+    });		
+      
+    //Animation
+  
+    $(document).ready(function() {
+      $('body.hero-anime').removeClass('hero-anime');
+    });
+  
+    //Menu On Hover
+      
+    $('body').on('mouseenter mouseleave','.nav-item',function(e){
+        if ($(window).width() > 750) {
+          var _d=$(e.target).closest('.nav-item');_d.addClass('show');
+          setTimeout(function(){
+          _d[_d.is(':hover')?'addClass':'removeClass']('show');
+          },1);
+        }
+    });	
+  
+    //Switch light/dark
+  
+    $("#switch").on('click', function () {
+      if ($("body").hasClass("dark")) {
+        $("body").removeClass("dark");
+        $("#switch").removeClass("switched");
+      }
+      else {
+        $("body").addClass("dark");
+        $("#switch").addClass("switched");
+      }
+    });  
+  
+    })(jQuery); 
+  
+    // ---------Responsive-navbar-active-animation-----------
+  function test(){
+  var tabsNewAnim = $('#navbarSupportedContent');
+  var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+  var activeItemNewAnim = tabsNewAnim.find('.active');
+  var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
+  var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
+  var itemPosNewAnimTop = activeItemNewAnim.position();
+  var itemPosNewAnimLeft = activeItemNewAnim.position();
+  $(".hori-selector").css({
+    "top":itemPosNewAnimTop.top + "px", 
+    "left":itemPosNewAnimLeft.left + "px",
+    "height": activeWidthNewAnimHeight + "px",
+    "width": activeWidthNewAnimWidth + "px"
+  });
+  $("#navbarSupportedContent").on("click","li",function(e){
+    $('#navbarSupportedContent ul li').removeClass("active");
+    $(this).addClass('active');
+    var activeWidthNewAnimHeight = $(this).innerHeight();
+    var activeWidthNewAnimWidth = $(this).innerWidth();
+    var itemPosNewAnimTop = $(this).position();
+    var itemPosNewAnimLeft = $(this).position();
+    $(".hori-selector").css({
+      "top":itemPosNewAnimTop.top + "px", 
+      "left":itemPosNewAnimLeft.left + "px",
+      "height": activeWidthNewAnimHeight + "px",
+      "width": activeWidthNewAnimWidth + "px"
+    });
+  });
+  }
+  $(document).ready(function(){
+  setTimeout(function(){ test(); });
+  });
+  $(window).on('resize', function(){
+  setTimeout(function(){ test(); }, 500);
+  });
+  $(".navbar-toggler").click(function(){
+  $(".navbar-collapse").slideToggle(300);
+  setTimeout(function(){ test(); });
+  });
+  
+  
+  
+  // --------------add active class-on another-page move----------
+  jQuery(document).ready(function($){
+  // Get current path and find target link
+  var path = window.location.pathname.split("/").pop();
+  
+  // Account for home page with empty path
+  if ( path == '' ) {
+    path = 'index.html';
+  }
+  
+  var target = $('#navbarSupportedContent ul li a[href="'+path+'"]');
+  // Add active class to target link
+  target.parent().addClass('active');
+  });
+  </script>
+{% block content %}{% endblock %}
+  
+
+</html>

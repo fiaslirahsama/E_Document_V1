@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<left>
+<div class="container" >
+
+  {% if roles == 'superadmin' %}
+    <h4 style="text-align: left;">Selamat Datang Admin!, {{ current_user.nama }} dari departemen {{current_user.departemen}}</h4><br>
+    <a href="{{ url_for('dokumen.menu_dokumen') }}"><button class="btn btn-default">
+      <img src="../static/image/mt.png" height="30" width="30" /> dokumen
+    </button></a>
+    <!-- <button class="btn btn-default">
+      <img src="http://i.stack.imgur.com/e2S63.png" width="20" /> Sign In with Facebook
+    </button> -->
+    {% elif roles == 'manager' %}
+    <h4 style="text-align: left;">Selamat Datang Manager!, {{ current_user.nama }} dari departemen {{current_user.departemen}}</h4><br>
+    <a href="{{ url_for('dokumen.menu_dokumen') }}"><button class="btn btn-default">
+      <img src="../static/image/mt.png" height="30" width="30" /> dokumen
+    </button></a>
+    <!-- <button class="btn btn-default">
+      <img src="http://i.stack.imgur.com/e2S63.png" width="20" /> Sign In with Facebook
+    </button> -->
+    {% else %}
+    <h4 style="text-align: left;">Selamat Datang!, {{ current_user.nama }} dari departemen {{current_user.departemen}}</h4><br>
+    <a href="{{ url_for('dokumen.menu_dokumen') }}"><button class="btn btn-default">
+      <img src="../static/image/mt.png" height="30" width="30" /> dokumen
+    </button></a>
+    <!-- <button class="btn btn-default">
+      <img src="http://i.stack.imgur.com/e2S63.png" width="20" /> Sign In with Facebook
+    </button> -->
+    {%  endif %}
+</div>
+</left>
+
+{% endblock %}
+
+
+
