@@ -25,8 +25,7 @@
         </div>
     </div>
     <div name="filebrowser">
-      <h1 align="center">Dokumen</h1><br>
-      {{ current_working_directory }}
+      <h5>{{ current_working_directory }}</h5><br>
       <ul>
         {% for item in file_list %}
         <li>{{item}}</li>

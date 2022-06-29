@@ -9,8 +9,7 @@ from werkzeug.utils import secure_filename
 # from app_edoc.pemrograman.autentikasi.model_autentikasi import User
 
 # BASEDIR = os.path.abspath(os.path.dirname(os.path.dirname(realpath(__file__))))
-BASEDIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(realpath(__file__)))))
-UPLOAD_FOLDER = os.path.join(BASEDIR, './static/files')
+
 
 def createFolder():
     if request.method == 'POST':

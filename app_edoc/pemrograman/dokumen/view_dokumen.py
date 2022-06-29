@@ -32,7 +32,11 @@ def master_dokumen():
 def distribusi_dokumen():
     current_working_directory = os.path.join(BASEDIR, UPLOAD_FOLDER)
     os.chdir(current_working_directory)
-    file_list = subprocess.check_output('dir', shell=True).decode('utf-8').split('\n')
+    file_list_input = subprocess.check_output('dir', shell=True).decode('utf-8').split('\n')
+    file_list = []
+    for item in file_list_input[7:-3]:
+        item_split = str(item).split()
+        file_list.insert(len(file_list),item_split[-1])
     return render_template('dokumen/distribusi_dokumen.html', current_working_directory = current_working_directory, file_list = file_list)
 
 @bp_dokumen.route('/createfolder', methods=['GET', 'POST'])
@@ -46,3 +50,13 @@ def create_folder():
 def create_file():
     controller_dokumen.createFile()
     return redirect(url_for('dokumen.distribusi_dokumen'))
+
+# @bp_dokumen.route('/level_up/<>')
+# def level_up():
+#     os.chdir('..')
+#     file_list_input = subprocess.check_output('dir', shell=True).decode('utf-8').split('\n')
+#     file_list = []
+#     for item in file_list_input[7:-3]:
+#         item_split = str(item).split()
+#         file_list.insert(len(file_list),item_split[-1])
+#     return redirect(url_for('dokumen.distribusi_dokumen', current_working_directory = current_working_directory, file_list = file_list))
