@@ -6,16 +6,17 @@ from flask_login import login_user, login_required, current_user, logout_user
 from os.path import join, dirname, realpath
 import os
 from werkzeug.utils import secure_filename
+from app_edoc.pemrograman.dokumen.view_dokumen import *
 # from app_edoc.pemrograman.autentikasi.model_autentikasi import User
 
-def createFolder():
-    if request.method == 'POST':
-        namafolder = request.form['namafolder']
-        permission = request.form['permission']
+# def createFolder():
+#     if request.method == 'POST':
+#         namafolder = request.form['namafolder']
+#         permission = request.form['permission']
         
-        # print(BASEDIR)
-        # print(UPLOAD_FOLDER)
-        print(namafolder)
+#         # print(BASEDIR)
+#         # print(UPLOAD_FOLDER)
+#         print(namafolder)
         # createdFolder = os.path.join(UPLOAD_FOLDER, namafolder)
         # print(createdFolder)
 
@@ -33,7 +34,8 @@ def createFile():
             files = secure_filename(file.filename)
             filesplit = files.split('.')
             fileext = filesplit[-1]
-            filefolder = os.path.join(UPLOAD_FOLDER, files)
+            current_working_directory = view_dokumen.current_working_directory
+            filefolder = os.path.join(current_working_directory, files)
             file.save(filefolder)
             size = os.stat(filefolder).st_size
             lensize = len(str(size))

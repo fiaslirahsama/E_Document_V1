@@ -40,20 +40,41 @@
     <div name="filebrowser">
       <h5><a href="{{ url_for('dokumen.menu_dokumen') }}">Kembali</a></h5>
       <h5>{{ current_working_directory }}</h5><br>
-      <ul>
-        <li><a href="{{ url_for('dokumen.level_up') }}">..</a>
-          <!-- <form action="{{url_for('dokumen.level_up')}}" method="post">
-            <button type="submit" name="cwd" value="{{ current_working_directory }}" class="btn-link">..</button>
-        </form> -->
-        </li>
+      <table>
+        <tr>
+          <th>name</th>
+          <th>action</th>
+        </tr>
+        {% if root == False %}
+        <tr>
+          <td><a href="{{ url_for('dokumen.level_up') }}">..</a></td>
+          <td></td>
+        </tr>
+        {% endif %}
         {% for item in file_list %}
-        {% if '.' not in item %}
-        <li><strong><a href="{{ url_for('dokumen.level_down', item=item)}}">{{item}}</a></strong></li>
-        {% else %}
-        <li>{{item}}</li>
+        <tr>
+          {% if '.' not in item %}
+          <td><strong><a href="{{ url_for('dokumen.level_down', item=item)}}">{{item}}</a></strong></td>
+          <td align="center"><a>&emsp;&emsp; X</a></td>
+          {% else %}
+          <td><a href="{{ url_for('dokumen.open_file', item=item)}}">{{item}}</a></td>
+          <td><a>&emsp;&emsp; X</a></td>
+        </tr>
         {% endif %}
         {% endfor %}
-      </ul>
+      </table>
+      <!-- <ul>
+        {% if root == False %}
+        <li><a href="{{ url_for('dokumen.level_up') }}">..</a></li>
+        {% endif %}
+        {% for item in file_list %}
+        {% if '.' not in item %}
+        <li><strong><a href="{{ url_for('dokumen.level_down', item=item)}}">{{item}}</a></strong><a> X</a></li>
+        {% else %}
+        <li><a href="{{ url_for('dokumen.open_file', item=item)}}">{{item}}</a></li>
+        {% endif %}
+        {% endfor %}
+      </ul> -->
     </div>
 </div>
 

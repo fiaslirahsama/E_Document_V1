@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block title %}Dokumen Menu{% endblock %}
+
+{% block content %}
+<div class="container">
+    ini menu File
+    <strong>Filename:</strong>{{filename}}
+    <h5><a href="{{ url_for('dokumen.distribusi_dokumen') }}">Kembali</a></h5>
+</div>
+{% endblock %}
