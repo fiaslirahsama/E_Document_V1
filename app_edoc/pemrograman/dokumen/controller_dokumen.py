@@ -8,19 +8,16 @@ import os
 from werkzeug.utils import secure_filename
 # from app_edoc.pemrograman.autentikasi.model_autentikasi import User
 
-# BASEDIR = os.path.abspath(os.path.dirname(os.path.dirname(realpath(__file__))))
-
-
 def createFolder():
     if request.method == 'POST':
         namafolder = request.form['namafolder']
         permission = request.form['permission']
         
-        print(BASEDIR)
-        print(UPLOAD_FOLDER)
+        # print(BASEDIR)
+        # print(UPLOAD_FOLDER)
         print(namafolder)
-        createdFolder = os.path.join(UPLOAD_FOLDER, namafolder)
-        print(createdFolder)
+        # createdFolder = os.path.join(UPLOAD_FOLDER, namafolder)
+        # print(createdFolder)
 
 def createFile():
     if request.method == 'POST':

@@ -40,8 +40,6 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEBUG = True
     # SQLALCHEMY_DATABASE_URI = 'mysql:///'+os.path.join(basedir, 'coba_db.db') #TODO
-    UPLOAD_FOLDER = os.path.join(BASEDIR, './app_edoc/static/files')
-
 
     DB_HOST = str(os.environ.get("DB_HOST"))
     DB_NAME = str(os.environ.get("DB_NAME"))

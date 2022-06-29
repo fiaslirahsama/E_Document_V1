@@ -3,6 +3,19 @@
 {% block title %}Dokumen Menu{% endblock %}
 
 {% block content %}
+<style>
+  .btn-link {
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    color: #0000EE;
+    padding: 0;
+    text-decoration: underline;
+    font-family: inherit;
+    font-size: inherit;
+}
+</style>
 <div class="container">
     <div class="" style="margin: 0px 30px 0px 30px;">
         <div class="table-responsive">
@@ -25,10 +38,20 @@
         </div>
     </div>
     <div name="filebrowser">
+      <h5><a href="{{ url_for('dokumen.menu_dokumen') }}">Kembali</a></h5>
       <h5>{{ current_working_directory }}</h5><br>
       <ul>
+        <li><a href="{{ url_for('dokumen.level_up') }}">..</a>
+          <!-- <form action="{{url_for('dokumen.level_up')}}" method="post">
+            <button type="submit" name="cwd" value="{{ current_working_directory }}" class="btn-link">..</button>
+        </form> -->
+        </li>
         {% for item in file_list %}
+        {% if '.' not in item %}
+        <li><strong><a href="{{ url_for('dokumen.level_down', item=item)}}">{{item}}</a></strong></li>
+        {% else %}
         <li>{{item}}</li>
+        {% endif %}
         {% endfor %}
       </ul>
     </div>

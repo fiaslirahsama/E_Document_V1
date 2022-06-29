@@ -6,12 +6,17 @@ from flask_login import LoginManager, current_user
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.menu import MenuLink
+from os.path import join, dirname, realpath
+import os
 
 # from flask_mysqldb import MySQL
 # import MySQLdb.cursors
 
 db = SQLAlchemy()
 migrate = Migrate()
+BASEDIR = os.path.abspath(os.path.dirname(realpath(__file__)))
+UPLOAD_FOLDER = os.path.join(BASEDIR, './static/files')
+
 
 def edoc_app(config=DevelopmentConfig):
     app = Flask(__name__)
@@ -22,6 +27,9 @@ def edoc_app(config=DevelopmentConfig):
 
     migrate.init_app(app, db)
     migrate.app = app
+
+    # BASEDIR = app.config['BASEDIR']
+    # UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
     from app_edoc.pemrograman.autentikasi import model_autentikasi, controller_autentikasi
 
