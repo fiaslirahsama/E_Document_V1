@@ -7,7 +7,10 @@ from app_edoc.pemrograman.autentikasi.model_autentikasi import User
 
 @bp_autentikasi.route('/')
 def index():
-    return redirect(url_for('autentikasi.login'))
+    if current_user:
+        return redirect(url_for('autentikasi.home'))
+    else:
+        return redirect(url_for('autentikasi.login'))
 
 @bp_autentikasi.route('/login', methods=['GET', 'POST'])
 def login():
@@ -28,8 +31,8 @@ def home():
     # roles = controller_autentikasi.home()
     return render_template('home.html')
 
-@bp_autentikasi.route('/tes', methods=['GET', 'POST'])
-@login_required
-def tes():
-    # roles = controller_autentikasi.home()
-    return 'tes'
+# @bp_autentikasi.route('/tes', methods=['GET', 'POST'])
+# @login_required
+# def tes():
+#     # roles = controller_autentikasi.home()
+#     return 'tes'

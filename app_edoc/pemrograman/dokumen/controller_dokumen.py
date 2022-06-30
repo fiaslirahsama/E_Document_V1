@@ -6,55 +6,64 @@ from flask_login import login_user, login_required, current_user, logout_user
 from os.path import join, dirname, realpath
 import os
 from werkzeug.utils import secure_filename
-from app_edoc.pemrograman.dokumen.view_dokumen import *
+from app_edoc.pemrograman.dokumen.model_dokumen import File, Folder
 # from app_edoc.pemrograman.autentikasi.model_autentikasi import User
-
-# def createFolder():
-#     if request.method == 'POST':
-#         namafolder = request.form['namafolder']
-#         permission = request.form['permission']
-        
-#         # print(BASEDIR)
-#         # print(UPLOAD_FOLDER)
-#         print(namafolder)
-        # createdFolder = os.path.join(UPLOAD_FOLDER, namafolder)
-        # print(createdFolder)
 
 def createFile():
     if request.method == 'POST':
         file = request.files['file']
         revision = request.form['revision']
         permission = request.form['permission']
-        created_by = current_user.nama
+        currentWorkingDirectory = request.form['cwd']
 
         if not permission:
             permission = 'all'
 
         if file:
-            files = secure_filename(file.filename)
-            filesplit = files.split('.')
-            fileext = filesplit[-1]
-            current_working_directory = view_dokumen.current_working_directory
-            filefolder = os.path.join(current_working_directory, files)
+            fileName = secure_filename(file.filename)
+            fileSplit = fileName.split('.')
+            fileExt = fileSplit[-1]
+            filefolder = os.path.join(currentWorkingDirectory, fileName)
             file.save(filefolder)
-            size = os.stat(filefolder).st_size
-            lensize = len(str(size))
+            fileSize = os.stat(filefolder).st_size
+            lensize = len(str(fileSize))
             if lensize >= 7:
-                size = size/(1024*1024)
-                size = float("{0:.2f}".format(size))
-                size = str(size)+' MB'
+                fileSize = fileSize/(1024*1024)
+                fileSize = float("{0:.2f}".format(fileSize))
+                fileSize = str(fileSize)+' MB'
             elif lensize >=4 and lensize < 7:
-                size = size/1024
-                size = float("{0:.2f}".format(size))
-                size = str(size)+' KB'
+                fileSize = fileSize/1024
+                fileSize = float("{0:.2f}".format(fileSize))
+                fileSize = str(fileSize)+' KB'
             else:
-                size = str(size)+' B'
-            print(files,filefolder, fileext, size, lensize)
+                fileSize = str(fileSize)+' B'
+            
+            insertData = File(file_name=fileName, revision=revision, file_size=fileSize, file_ext=fileExt, permission = permission, parent_path = currentWorkingDirectory, created_by=current_user.nama)
+            db.session.add(insertData)
+            db.session.commit()
+            db.session.close()
+            # print(files,filefolder, fileext, size, lensize)
             flash('uploaded')
         else:
             flash('Silahkan pilih file yang mau diupload')
 
-
+def createFolder():
+    if request.method == 'POST':
+        namaFolder = request.form['namafolder']
+        permission = request.form['permission']
+        if not permission:
+            permission = 'all'
+        currentWorkingDirectory= request.form['cwd']
+        namaFolder = str(namaFolder)
+        folder_path = os.path.join(currentWorkingDirectory, namaFolder)
+        os.makedirs(folder_path)
+        insertData = Folder(folder_name=namaFolder, permission = permission, parent_path = currentWorkingDirectory, created_by = current_user.nama)
+        db.session.add(insertData)
+        db.session.commit()
+        db.session.close()
+        # print(BASEDIR)
+        # print(UPLOAD_FOLDER)
+        print(folder_path)
 
 # def menuDokumen():
 # def login():

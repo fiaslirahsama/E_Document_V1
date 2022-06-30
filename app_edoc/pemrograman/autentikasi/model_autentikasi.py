@@ -1,11 +1,26 @@
 from app_edoc import db
 import enum
+import os
 from sqlalchemy import Enum
 from flask import abort
 from flask_login import UserMixin, current_user
 from flask_admin import expose, AdminIndexView
-from flask_admin.contrib.sqla import ModelView 
+from flask_admin.contrib.sqla import ModelView
+from app_edoc import db, BASEDIR, UPLOAD_FOLDER
 
+
+def rootFolder():
+  rf = os.path.join(BASEDIR, UPLOAD_FOLDER) 
+  os.chdir(rf)
+  rf = os.getcwd()
+  return rf
+
+class UserVariables(db.Model):
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  userid = db.Column(db.Integer, nullable = False)
+  username = db.Column(db.String(30), nullable = False)
+  current_working_directory = db.Column(db.String(9999), nullable = False, default=rootFolder)
+  root = db.Column(db.Boolean, default=True)
 class RoleEnum(enum.Enum):
   user = 'user'
   manager = 'manager'

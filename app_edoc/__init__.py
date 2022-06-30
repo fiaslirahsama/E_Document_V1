@@ -53,5 +53,7 @@ def edoc_app(config=DevelopmentConfig):
     app.register_blueprint(autentikasi)
     from app_edoc.pemrograman.dokumen import bp_dokumen as dokumen
     app.register_blueprint(dokumen)
+    
+    db.create_all()
 
     return app

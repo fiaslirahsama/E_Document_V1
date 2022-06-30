@@ -6,14 +6,15 @@ def waktu_sekarang():
     now = datetime.now()
     return now
 
-class Document(db.Model):
+class File(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  file_path = db.Column(db.String(99), nullable = False)
   file_name = db.Column(db.String(99), nullable = False)
+  revision = db.Column(db.String(99), nullable = False)
   file_size = db.Column(db.String(30), nullable = False)
   file_ext = db.Column(db.String(10), nullable = False)
-  revision = db.Column(db.String(99), nullable = False)
   permission = db.Column(db.String(99), nullable = False)
+  parent_path = db.Column(db.String(99), nullable = False)
+  type = db.Column(db.String(99), nullable = False, default='file')
   created_at = db.Column(db.DateTime, nullable=False, default=waktu_sekarang)
   created_by = db.Column(db.String(30), nullable=False)
   updated_at = db.Column(db.DateTime)
@@ -23,13 +24,20 @@ class Document(db.Model):
 
 class Folder(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  pathname = db.Column(db.String(99), nullable = False)
-  permission = db.Column(db.String(99))
+  folder_name = db.Column(db.String(99), nullable = False)
+  folder_ext = db.Column(db.String(20), nullable = False, default='directory')
+  permission = db.Column(db.String(99), nullable = False, default='all')
+  parent_path = db.Column(db.String(99), nullable = False)
+  type = db.Column(db.String(99), nullable = False, default='folder')
   created_at = db.Column(db.DateTime, nullable=False, default=waktu_sekarang)
   created_by = db.Column(db.String(30), nullable=False)
   updated_at = db.Column(db.DateTime)
   updated_by = db.Column(db.String(30))
   flag = db.Column(db.String(10), nullable=False, default='on')
+
+# class Viewdoc(db.Model):
+#   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
 # class RoleEnum(enum.Enum):
 #   user = 'user'
 #   manager = 'manager'

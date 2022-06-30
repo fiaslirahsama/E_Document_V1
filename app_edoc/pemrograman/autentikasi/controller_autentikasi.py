@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from app_edoc import db
 from flask_login import login_user, login_required, current_user, logout_user
-from app_edoc.pemrograman.autentikasi.model_autentikasi import User
+from app_edoc.pemrograman.autentikasi.model_autentikasi import User, UserVariables
 
 def login():
     message = ''
@@ -21,8 +21,19 @@ def login():
         if not message:
             renderSelf = False
             login_user(user)
-            db.session.close()
-            return renderSelf, message
+            cekData = UserVariables.query.filter_by(userid = current_user.id, username=current_user.username).first()
+            if cekData:
+                cekData.current_working_directory = model_autentikasi.rootFolder()
+                cekData.root = True
+                db.session.commit()
+                db.session.close()
+                return renderSelf, message
+            else:
+                insertData = UserVariables(userid = current_user.id, username=current_user.username)
+                db.session.add(insertData)
+                db.session.commit()
+                db.session.close()
+                return renderSelf, message
         else:
             renderSelf = True
             return renderSelf, message

@@ -43,6 +43,9 @@
       <table>
         <tr>
           <th>name</th>
+          <th>revision</th>
+          <th>size</th>
+          <th>type</th>
           <th>action</th>
         </tr>
         {% if root == False %}
@@ -51,14 +54,21 @@
           <td></td>
         </tr>
         {% endif %}
-        {% for item in file_list %}
+
+        {% for item in file_list|sort(attribute='type', reverse=True) %}
         <tr>
-          {% if '.' not in item %}
-          <td><strong><a href="{{ url_for('dokumen.level_down', item=item)}}">{{item}}</a></strong></td>
-          <td align="center"><a>&emsp;&emsp; X</a></td>
+          {% if '.' not in item[0] %}
+          <td><strong><a href="{{ url_for('dokumen.level_down', item=item[0])}}">{{item[0]}}</a></strong></td>
+          <td></td>
+          <td></td>
+          <td>{{item[3]}}</td>
+          <td align="center"><a href="{{ url_for('dokumen.delete_folder', item=item[0])}}">&emsp;&emsp; X</a></td>
           {% else %}
-          <td><a href="{{ url_for('dokumen.open_file', item=item)}}">{{item}}</a></td>
-          <td><a>&emsp;&emsp; X</a></td>
+          <td><a href="{{ url_for('dokumen.open_file', item=item[0])}}">{{item[0]}}</a></td>
+          <td>{{item[1]}}</td>
+          <td>{{item[2]}}</td>
+          <td>{{item[3]}}</td>
+          <td><a href="{{ url_for('dokumen.delete_file', item=item[0])}}">&emsp;&emsp; X</a></td>
         </tr>
         {% endif %}
         {% endfor %}
@@ -102,6 +112,7 @@
                       <input type="text" name="permission" class="form-control" placeholder="kosongkan untuk all user">
                     </div>
                   </div>
+                      <input type="hidden" name="cwd" value="{{current_working_directory}}">
               </div>
             </div>
           </div>
@@ -144,6 +155,7 @@
                       <input type="text" name="permission" class="form-control" placeholder="kosongkan untuk all user">
                     </div>
                   </div>
+                  <input type="hidden" name="cwd" value="{{current_working_directory}}">
               </div>
             </div>
           </div>
