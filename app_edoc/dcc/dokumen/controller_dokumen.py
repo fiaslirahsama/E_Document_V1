@@ -1,5 +1,3 @@
-from asyncore import file_dispatcher
-from msilib.schema import File
 from app_edoc.dcc import autentikasi
 from app_edoc.dcc.autentikasi import model_autentikasi
 from app_edoc.dcc.autentikasi.model_autentikasi import User, UserVariables

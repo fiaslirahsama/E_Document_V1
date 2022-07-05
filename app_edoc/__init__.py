@@ -1,4 +1,4 @@
-from flask import Flask, url_for
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import DevelopmentConfig
@@ -18,7 +18,7 @@ BASEDIR = os.path.abspath(os.path.dirname(realpath(__file__)))
 UPLOAD_FOLDER_DCC = os.path.join(BASEDIR, './static/files/dcc')
 UPLOAD_FOLDER_METRO = os.path.join(BASEDIR, './static/files/metro')
 
-def edoc_app(config=DevelopmentConfig):
+def app_edoc(config=DevelopmentConfig):
     app = Flask(__name__)
     app.config.from_object(config)
 
