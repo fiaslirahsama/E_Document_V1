@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container">
     <h4>ini menu dokumen kontrol</h4><br>
-    {% if roles == 'superadmin' or roles == 'manager' %}
+    {% if roles == 'superadmin' or roles == 'managerdcc' %}
     <a href="{{url_for('dokumen.master_dokumen')}}">masterdokumen</a><br>
     {% endif %}
     <a href="{{url_for('dokumen.distribusi_dokumen')}}">dokumen</a><br>

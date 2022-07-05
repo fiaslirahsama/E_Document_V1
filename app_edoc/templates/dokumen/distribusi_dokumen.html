@@ -26,11 +26,13 @@
                   <h5> <b>Distribusi Dokumen</b></h5>
                 </div>
                 <div class="col-sm-6">
+                  {% if roles == 'superadmin' or roles == 'manager' %}
                     <a class="btn btn-success" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="material-icons">&#xE147;</i> <span>Create</span></a>
                     <div class="dropdown-menu">
                         <a href="#addModalFile" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Create New File</span></a>
                         <a href="#addModalFolder" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Create New Folder</span></a>
                     </div>
+                    {% endif %}
                 </div>
               </div>
             </div>
@@ -50,41 +52,39 @@
         </tr>
         {% if root == False %}
         <tr>
-          <td><a href="{{ url_for('dokumen.level_up') }}">..</a></td>
+          <td><a href="{{ url_for('dokumen.back_directory_dcc') }}"><strong><--- Back</strong></a></td>
           <td></td>
         </tr>
         {% endif %}
 
         {% for item in file_list|sort(attribute='type', reverse=True) %}
         <tr>
-          {% if '.' not in item[0] %}
-          <td><strong><a href="{{ url_for('dokumen.level_down', item=item[0])}}">{{item[0]}}</a></strong></td>
+          {% if '.' not in item[2] %}
+          <td><strong><a href="{{ url_for('dokumen.next_directory_dcc', item=item[2])}}">{{item[2]}}</a></strong></td>
           <td></td>
           <td></td>
-          <td>{{item[3]}}</td>
-          <td align="center"><a href="{{ url_for('dokumen.delete_folder', item=item[0])}}">&emsp;&emsp; X</a></td>
+          <td>{{item[5]}}</td>
+          {% if roles == 'superadmin' or roles == 'manager' %}
+          <td>
+            <button data-id='{{item[0]}}' data-folderid='{{item[1]}}' data-foldername='{{item[2]}}' class="folder btn btn-success" ><span>Edit</span></button>
+            <a class="btn btn-danger" href="{{ url_for('dokumen.delete_folder_dcc', id=item[0], folder_id=item[1], folder_name=item[2])}}"><span>Del</span></a>
+          </td>
+          {% endif %}
           {% else %}
-          <td><a href="{{ url_for('dokumen.open_file', item=item[0])}}">{{item[0]}}</a></td>
-          <td>{{item[1]}}</td>
-          <td>{{item[2]}}</td>
+          <td><a href="{{ url_for('dokumen.open_file_dcc', item=item[2])}}">{{item[2]}}</a></td>
           <td>{{item[3]}}</td>
-          <td><a href="{{ url_for('dokumen.delete_file', item=item[0])}}">&emsp;&emsp; X</a></td>
+          <td>{{item[4]}}</td>
+          <td>{{item[5]}}</td>
+          {% if roles == 'superadmin' or roles == 'manager' %}
+          <td>
+            <button data-id='{{item[0]}}' data-fileid="{{item[1]}}" data-filename="{{item[2]}}" class="file btn btn-success" ><span>Edit</span></button>
+            <a class="btn btn-danger" href="{{ url_for('dokumen.delete_file_dcc', id=item[0], file_id=item[1] file_name=item[2])}}"><span>Del</span></a>
+          </td>
+          {% endif %}
         </tr>
         {% endif %}
         {% endfor %}
       </table>
-      <!-- <ul>
-        {% if root == False %}
-        <li><a href="{{ url_for('dokumen.level_up') }}">..</a></li>
-        {% endif %}
-        {% for item in file_list %}
-        {% if '.' not in item %}
-        <li><strong><a href="{{ url_for('dokumen.level_down', item=item)}}">{{item}}</a></strong><a> X</a></li>
-        {% else %}
-        <li><a href="{{ url_for('dokumen.open_file', item=item)}}">{{item}}</a></li>
-        {% endif %}
-        {% endfor %}
-      </ul> -->
     </div>
 </div>
 
@@ -92,7 +92,7 @@
  <div id="addModalFolder" class="modal fade">
     <div class="modal-dialog" style="max-width: 500px;">
       <div class="modal-content">
-        <form method="POST" action="{{url_for('dokumen.create_folder')}}" name="elongasi">
+        <form method="POST" action="{{url_for('dokumen.create_folder_dcc')}}" name="create_folder">
           <div class="modal-header">						
             <h4 class="modal-title">Create Folder</h4>
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -106,13 +106,18 @@
                     <input type="text" name="namafolder" class="form-control" required>
                   </div>
                 </div>
-                <div class="col-12">
-                    <div class="form-group">
+                <div class="col-12" >
+                    <div class="form-group" >
                       <label>Permission</label>
-                      <input type="text" name="permission" class="form-control" placeholder="kosongkan untuk all user">
+                      <select style="width:100%" name="folder_permission_option" id="folder_permission_option" class="folder_js-example-basic-multiple" multiple="multiple">
+                        {% for option_value in option_departemen %}
+                        <option value="{{option_value[0]}}">{{option_value[0]}}</option>
+                        {% endfor %}
+                      </select>
                     </div>
                   </div>
-                      <input type="hidden" name="cwd" value="{{current_working_directory}}">
+                  <input type="hidden" name="folder_permission" id="folder_permission"/>    
+                  <input type="hidden" name="cwd" value="{{current_working_directory}}">
               </div>
             </div>
           </div>
@@ -129,7 +134,7 @@
  <div id="addModalFile" class="modal fade">
     <div class="modal-dialog" style="max-width: 500px;">
       <div class="modal-content">
-        <form method="POST" action="{{url_for('dokumen.create_file')}}" enctype="multipart/form-data">
+        <form method="POST" action="{{url_for('dokumen.create_file_dcc')}}" enctype="multipart/form-data">
           <div class="modal-header">						
             <h4 class="modal-title">Create File</h4>
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -152,9 +157,14 @@
                 <div class="col-12">
                     <div class="form-group">
                       <label>Permission</label>
-                      <input type="text" name="permission" class="form-control" placeholder="kosongkan untuk all user">
+                      <select style="width:100%" name="file_permission_option" id="file_permission_option" class="file_js-example-basic-multiple" multiple="multiple">
+                        {% for option_value in option_departemen %}
+                        <option value="{{option_value[0]}}">{{option_value[0]}}</option>
+                        {% endfor %}
+                      </select>
                     </div>
                   </div>
+                  <input type="hidden" name="file_permission" id="file_permission"/> 
                   <input type="hidden" name="cwd" value="{{current_working_directory}}">
               </div>
             </div>
@@ -167,4 +177,82 @@
       </div>
     </div>
   </div>
+
+  <div id="editFolderModal" class="modal fade">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <div class="modal-content">
+          <div class="modal-header">						
+            <h4 class="modal-title">Edit Folder</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          </div>
+          <div class="modal-body" id="editFolderModalBody">
+            </div>
+          <div class="modal-footer">
+            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="editFileModal" class="modal fade">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <div class="modal-content">
+          <div class="modal-header">						
+            <h4 class="modal-title">Edit File</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          </div>
+          <div class="modal-body" id="editFileModalBody">
+            </div>
+          <div class="modal-footer">
+            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  $(document).ready(function() {
+      $('.folder_js-example-basic-multiple').select2();
+      $('#folder_permission_option').change(function(){
+        $('#folder_permission').val($('#folder_permission_option').val());
+        var asw = $('#folder_permission').val($('#folder_permission_option').val());
+        console.log(asw)
+      });
+
+      $('.file_js-example-basic-multiple').select2();
+      $('#file_permission_option').change(function(){
+        $('#file_permission').val($('#file_permission_option').val());
+      });
+
+      $('.folder').click(function(){
+        var id = $(this).data('id')
+        var folder_id = $(this).data('folderid')
+        var folder_name = $(this).data('foldername')
+        $.ajax({
+          url: '/fetchdatafolderdcc',
+          type: 'post',
+          data: {id: id, folder_id: folder_id,folder_name: folder_name},
+          success: function(data){
+            $('#editFolderModalBody').html(data);
+            $('#editFolderModal').modal('show');
+          }
+        })
+      })
+
+      $('.file').click(function(){
+        var id = $(this).data('id')
+        var file_id = $(this).data('fileid')
+        var file_name = $(this).data('filename')
+        $.ajax({
+          url: '/fetchdatafiledcc',
+          type: 'post',
+          data: {id: id, file_id: file_id,file_name: file_name},
+          success: function(data){
+            $('#editFileModalBody').html(data);
+            $('#editFileModal').modal('show');
+          }
+        })
+      })
+  });
+  </script>
 {% endblock %}

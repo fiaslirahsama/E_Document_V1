@@ -12,25 +12,27 @@
     <a href="{{ url_for('dokumen.menu_dokumen') }}"><button class="btn btn-default">
       <img src="../static/image/mt.png" height="30" width="30" /> dokumen
     </button></a>
-    <!-- <button class="btn btn-default">
-      <img src="http://i.stack.imgur.com/e2S63.png" width="20" /> Sign In with Facebook
-    </button> -->
-    {% elif roles == 'manager' %}
-    <h4 style="text-align: left;">Selamat Datang Manager!, {{ current_user.nama }} dari departemen {{current_user.departemen}}</h4><br>
+    <a href="#"><button class="btn btn-default">
+      <img src="../static/image/logo.png" height="30" width="30" /> placeholder metro
+    </button></a>
+    {% elif roles == 'managerdcc' %}
+    <h4 style="text-align: left;">Selamat Datang Manager DCC!, {{ current_user.nama }} dari departemen {{current_user.departemen}}</h4><br>
     <a href="{{ url_for('dokumen.menu_dokumen') }}"><button class="btn btn-default">
       <img src="../static/image/mt.png" height="30" width="30" /> dokumen
     </button></a>
-    <!-- <button class="btn btn-default">
-      <img src="http://i.stack.imgur.com/e2S63.png" width="20" /> Sign In with Facebook
-    </button> -->
+    {% elif roles == 'managermetro' %}
+    <h4 style="text-align: left;">Selamat Datang Manager Metro!, {{ current_user.nama }} dari departemen {{current_user.departemen}}</h4><br>
+    <a href="#"><button class="btn btn-default">
+      <img src="../static/image/logo.png" height="30" width="30" /> placeholder metro
+    </button></a>
     {% else %}
     <h4 style="text-align: left;">Selamat Datang!, {{ current_user.nama }} dari departemen {{current_user.departemen}}</h4><br>
     <a href="{{ url_for('dokumen.menu_dokumen') }}"><button class="btn btn-default">
       <img src="../static/image/mt.png" height="30" width="30" /> dokumen
     </button></a>
-    <!-- <button class="btn btn-default">
-      <img src="http://i.stack.imgur.com/e2S63.png" width="20" /> Sign In with Facebook
-    </button> -->
+    <a href="#"><button class="btn btn-default">
+      <img src="../static/image/logo.png" height="30" width="30" /> placeholder metro
+    </button></a>
     {%  endif %}
 </div>
 </left>

@@ -1,0 +1,16 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}Dokumen Menu{% endblock %}
+
+{% block content %}
+<div class="container">
+    ini menu File
+    <strong>Filename:</strong>{{filename}}
+    <h5><a href="{{ url_for('dokumen.distribusi_dokumen') }}">Kembali</a></h5>
+</div>
+
+<embed src="file:///C:/Users/Lenovo1/Downloads/helloworld%20(1).pdf" style="width: 660px; height:  640px;" frameborder="0"></embed>
+
+
+{% endblock %}

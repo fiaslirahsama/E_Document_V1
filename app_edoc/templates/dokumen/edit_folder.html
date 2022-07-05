@@ -1,0 +1,42 @@
+   <!-- Edit Folder Modal HTML -->
+  <form method="POST" action="{{url_for('dokumen.update_folder_dcc')}}" name="elongasi">				
+      <div class="form-group">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <label>Nama Folder</label>
+              <input type="text" name="nama_folder" class="form-control" value="{{folder_name}}" required>
+            </div>
+          </div>
+          <div class="col-12" >
+              <div class="form-group" >
+                <label>Permission</label>
+                <select style="width:100%" name="edit_folder_permission_option" id="edit_folder_permission_option" class="edit_folder_js-example-basic-multiple" multiple="multiple">
+                  {% for option_value in option_departemen %}
+                  {% if option_value[0] in permission_departemen %}
+                  <option value="{{option_value[0]}}" selected>{{option_value[0]}}</option>
+                  {% else %}
+                  <option value="{{option_value[0]}}">{{option_value[0]}}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <input type="hidden" name="edit_folder_permission" id="edit_folder_permission"/>    
+            <input type="hidden" name="cwd" value="{{current_working_directory}}">
+            <input type="hidden" name="folder_id" value="{{folder_id}}">
+            <input type="hidden" name="id" value="{{id}}">
+        </div>
+      </div>
+    <input type="submit" class="btn btn-info" value="Save">
+  </form>
+  
+  <script>
+    $(document).ready(function() {
+        $('.edit_folder_js-example-basic-multiple').select2();
+        $('#edit_folder_permission_option').change(function(){
+          $('#edit_folder_permission').val($('#edit_folder_permission_option').val());
+        });
+
+    });
+    </script>

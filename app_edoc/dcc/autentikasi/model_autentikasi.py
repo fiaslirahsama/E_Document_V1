@@ -6,36 +6,44 @@ from flask import abort
 from flask_login import UserMixin, current_user
 from flask_admin import expose, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
-from app_edoc import db, BASEDIR, UPLOAD_FOLDER
+from app_edoc import db, BASEDIR, UPLOAD_FOLDER_DCC, UPLOAD_FOLDER_METRO
 
+### HELPER FUNCTION ###
+def rootFolderDcc():
+  rfd = os.path.join(BASEDIR, UPLOAD_FOLDER_DCC) 
+  os.chdir(rfd)
+  rfd = os.getcwd()
+  return rfd
 
-def rootFolder():
-  rf = os.path.join(BASEDIR, UPLOAD_FOLDER) 
-  os.chdir(rf)
-  rf = os.getcwd()
-  return rf
+def rootFolderMetro():
+  rfm = os.path.join(BASEDIR, UPLOAD_FOLDER_METRO)
+  os.chdir(rfm)
+  rfm = os.getcwd()
+  return rfm
 
+### MAIN FUNCTION ###
 class UserVariables(db.Model):
-  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True, index=True)
   userid = db.Column(db.Integer, nullable = False)
   username = db.Column(db.String(30), nullable = False)
-  current_working_directory = db.Column(db.String(9999), nullable = False, default=rootFolder)
-  root = db.Column(db.Boolean, default=True)
+  current_working_directory_dcc = db.Column(db.String(9999), nullable = False, default=rootFolderDcc)
+  current_working_directory_metro = db.Column(db.String(9999), nullable = False, default=rootFolderMetro)
+  root_dcc = db.Column(db.Boolean, default=True)
+  root_metro = db.Column(db.Boolean, default=True)
+
 class RoleEnum(enum.Enum):
   user = 'user'
-  manager = 'manager'
+  managerdcc = 'managerdcc'
+  managermetro = 'managermetro'
   superadmin = 'superadmin'
 
 class User(db.Model, UserMixin ):
-  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True, index=True)
   username = db.Column(db.String(30), nullable = False)
   nama = db.Column(db.String(50), nullable = False)
   password = db.Column(db.String(80), nullable = False)
   departemen = db.Column(db.String(80), nullable = False) #membedakan view per departemen
-  roles = db.Column(Enum(RoleEnum), nullable = False)
-  # is_user = db.Column(db.Boolean, default=False)
-  # is_manager = db.Column(db.Boolean, default=False)
-  # is_admin = db.Column(db.Boolean, default=False)
+  roles = db.Column(Enum(RoleEnum), nullable = False, default=RoleEnum.user)
   
   def __repr__(self):
     return '<User {}>'.format(self.id) 

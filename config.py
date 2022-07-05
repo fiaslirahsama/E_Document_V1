@@ -7,7 +7,8 @@ from sqlalchemy_utils import database_exists,create_database
 # set the base directory
 BASEDIR = os.path.abspath(os.path.dirname(realpath(__file__)))
 
-#
+### HELPER FUNCTION ######
+# CREATE DATABASE IF NOT EXIST
 def validateDatabase(DATABASE_FILE):
     dbName = str(os.environ.get("DB_NAME"))
     dbFile = DATABASE_FILE
@@ -18,19 +19,27 @@ def validateDatabase(DATABASE_FILE):
     else:
         print("Database "+str(dbName)+" Running")
 
-#
+# CREATE FOLDER IF NOT EXIST
 def createFolder(PATH):
     folderPath = os.path.join(BASEDIR, PATH)
     os.makedirs(folderPath)
 
+### MAIN FUNCTION ####
 # Create the super class
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    FOLDER_FILES = os.environ.get('FOLDER_FILES')
-    CEK_FOLDER_FILES = os.path.exists(FOLDER_FILES)
-    if not CEK_FOLDER_FILES:
-        createFolder(FOLDER_FILES)
-        print('Folder Telah Dibuat')
+    FOLDER_FILES_DCC = os.environ.get('FOLDER_FILES_DCC')
+    FOLDER_FILES_METRO = os.environ.get('FOLDER_FILES_METRO')
+    CEK_FOLDER_FILES_DCC = os.path.exists(FOLDER_FILES_DCC)
+    CEK_FOLDER_FILES_METRO = os.path.exists(FOLDER_FILES_METRO)
+    if not CEK_FOLDER_FILES_DCC:
+        createFolder(FOLDER_FILES_DCC)
+        print('Folder E-Document Control Telah Dibuat')
+    
+    if not CEK_FOLDER_FILES_METRO:
+        createFolder(FOLDER_FILES_METRO)
+        print('Folder E-Metrologi Telah Dibuat')
+
 
   # SQLALCHEMY_COMMIT_ON_TEARDOWN = True
   # SQLALCHEMY_TRACK_MODIFICATIONS = False

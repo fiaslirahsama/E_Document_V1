@@ -15,8 +15,8 @@ import os
 db = SQLAlchemy()
 migrate = Migrate()
 BASEDIR = os.path.abspath(os.path.dirname(realpath(__file__)))
-UPLOAD_FOLDER = os.path.join(BASEDIR, './static/files')
-
+UPLOAD_FOLDER_DCC = os.path.join(BASEDIR, './static/files/dcc')
+UPLOAD_FOLDER_METRO = os.path.join(BASEDIR, './static/files/metro')
 
 def edoc_app(config=DevelopmentConfig):
     app = Flask(__name__)
@@ -28,10 +28,7 @@ def edoc_app(config=DevelopmentConfig):
     migrate.init_app(app, db)
     migrate.app = app
 
-    # BASEDIR = app.config['BASEDIR']
-    # UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
-
-    from app_edoc.pemrograman.autentikasi import model_autentikasi, controller_autentikasi
+    from app_edoc.dcc.autentikasi import model_autentikasi, controller_autentikasi
 
     admin = Admin(app, name='Control Panel Admin', template_mode='bootstrap4', index_view=model_autentikasi.DashboardView())
     admin.add_view(model_autentikasi.Controller(model_autentikasi.User, db.session, name='User'))
@@ -41,7 +38,7 @@ def edoc_app(config=DevelopmentConfig):
     login_manager.init_app(app)
     login_manager.login_view = 'autentikasi.login'
 
-    from app_edoc.pemrograman.autentikasi import model_autentikasi
+    from app_edoc.dcc.autentikasi import model_autentikasi
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -49,11 +46,11 @@ def edoc_app(config=DevelopmentConfig):
 
     # ---------------------- REGISTER BLUEPRINT -------------------- 
 
-    from app_edoc.pemrograman.autentikasi import bp_autentikasi as autentikasi
+    from app_edoc.dcc.autentikasi import bp_autentikasi as autentikasi
     app.register_blueprint(autentikasi)
-    from app_edoc.pemrograman.dokumen import bp_dokumen as dokumen
+    from app_edoc.dcc.dokumen import bp_dokumen as dokumen
     app.register_blueprint(dokumen)
     
-    db.create_all()
+    # db.create_all()
 
     return app

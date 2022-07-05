@@ -1,9 +1,9 @@
-from app_edoc.pemrograman.autentikasi import bp_autentikasi, view_autentikasi, model_autentikasi
+from app_edoc.dcc.autentikasi import bp_autentikasi, view_autentikasi, model_autentikasi
 from flask import render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from app_edoc import db
 from flask_login import login_user, login_required, current_user, logout_user
-from app_edoc.pemrograman.autentikasi.model_autentikasi import User, UserVariables
+from app_edoc.dcc.autentikasi.model_autentikasi import User, UserVariables
 
 def login():
     message = ''
@@ -23,8 +23,10 @@ def login():
             login_user(user)
             cekData = UserVariables.query.filter_by(userid = current_user.id, username=current_user.username).first()
             if cekData:
-                cekData.current_working_directory = model_autentikasi.rootFolder()
-                cekData.root = True
+                cekData.current_working_directory_dcc = model_autentikasi.rootFolderDcc()
+                cekData.current_working_directory_metro = model_autentikasi.rootFolderMetro()
+                cekData.root_dcc = True
+                cekData.root_metro = True
                 db.session.commit()
                 db.session.close()
                 return renderSelf, message
