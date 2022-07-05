@@ -78,7 +78,7 @@
           {% if roles == 'superadmin' or roles == 'manager' %}
           <td>
             <button data-id='{{item[0]}}' data-fileid="{{item[1]}}" data-filename="{{item[2]}}" class="file btn btn-success" ><span>Edit</span></button>
-            <a class="btn btn-danger" href="{{ url_for('dokumen.delete_file_dcc', id=item[0], file_id=item[1] file_name=item[2])}}"><span>Del</span></a>
+            <a class="btn btn-danger" href="{{ url_for('dokumen.delete_file_dcc', id=item[0], file_id=item[1], file_name=item[2])}}"><span>Del</span></a>
           </td>
           {% endif %}
         </tr>
@@ -103,7 +103,7 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label>Nama Folder</label>
-                    <input type="text" name="namafolder" class="form-control" required>
+                    <input type="text" name="nama_folder" class="form-control" required>
                   </div>
                 </div>
                 <div class="col-12" >

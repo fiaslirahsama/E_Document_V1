@@ -55,7 +55,7 @@ def getCwdDcc():
     return cwd
 #
 def getDepartemen():
-    dept = db.session.query(User.departemen).filter(User)
+    dept = db.session.query(User.departemen).filter(User.id == current_user.id, User.username == current_user.username).first()
     db.session.close()
     departemen = ''
     for row in dept:
@@ -130,6 +130,26 @@ def getNamaFolder(id, folderId):
         namaFolder = str(row)
     return namaFolder
 #
+def getFileSize(fileFolder):
+    sizeFile = os.stat(fileFolder).st_size
+    lenSize = len(str(sizeFile))
+    if lenSize >= 7:
+        sizeFile = sizeFile/(1024*1024)
+        sizeFile = float("{0:.2f}".format(sizeFile))
+        sizeFile = str(sizeFile) + ' MB'
+    elif lenSize >= 4 and lenSize <7:
+        sizeFile = sizeFile/1024
+        sizeFile = float("{0:.2f}".format(sizeFile))
+        sizeFile = str(sizeFile) + ' KB'
+    else:
+        sizeFile = str(sizeFile) + ' B'
+    return sizeFile
+#
+def getFolderExist(namaFolder, currentWorkingDirectory):
+    folder = db.session.query(FolderDcc).filter(FolderDcc.folder_name==namaFolder, FolderDcc.parent_path==currentWorkingDirectory, FolderDcc.flag==True).first()
+    db.session.close()
+    return folder
+#
 def updateFolder(id, folderId, namaFolderNew, permission, currentWorkingDirectory):
     oldFolderData = FolderDcc.query.filter_by(id=id, folder_id=folderId, parent_path=currentWorkingDirectory, flag=True).first()
     updateNo = oldFolderData.update_no + 1
@@ -180,6 +200,11 @@ def getNamaFile(id, fileId, namaFile):
     namaFileNew = namaFile.replace(' ','_')
     namaFileNew = namaFileNew + '.' + fileExt
     return namaFileOld, namaFileNew
+#
+def getFileExist(namaFile, currentWorkingDirectory):
+    file = db.session.query(FileDcc).filter(FileDcc.file_name==namaFile, FileDcc.parent_path==currentWorkingDirectory, FileDcc.flag==True).first()
+    db.session.close()
+    return file
 #
 def updateFile(id, fileId, namaFileNew, permission, currentWorkingDirectory):
     oldFileData = FileDcc.query.filter_by(id=id, file_id=fileId, parent_path=currentWorkingDirectory, flag=True).first()
@@ -259,8 +284,15 @@ def createFolderDcc():
         permission = getPermission(permissioninput)
         namaFolder = str(namaFolder)
         folderPath = os.path.join(currentWorkingDirectory, namaFolder)
-        os.makedirs(folderPath)
-        insertFolderDcc(namaFolder, permission, currentWorkingDirectory)
+        cekFolderExist = getFolderExist(namaFolder, currentWorkingDirectory)
+        if cekFolderExist:
+            # flash("Nama Folder Telah Terpakai")
+            print("Nama Folder Telah Terpakai")
+        else:
+            os.makedirs(folderPath)
+            insertFolderDcc(namaFolder, permission, currentWorkingDirectory)
+            # flash("Folder "+namaFolder+" Berhasil Dibuat")
+            print("Folder "+namaFolder+" Berhasil Dibuat")
 
 #
 def createFileDcc():
@@ -273,24 +305,22 @@ def createFileDcc():
 
         if file:
             namaFile = secure_filename(file.filename)
-            fileSplit = namaFile.split('.')
-            extFile = fileSplit[-1]
-            fileFolder = os.path.join(currentWorkingDirectory, namaFile)
-            file.save(fileFolder)
-            sizeFile = os.stat(fileFolder).st_size
-            lenSize = len(str(sizeFile))
-            if lenSize >= 7:
-                sizeFile = sizeFile/(1024*1024)
-                sizeFile = float("{0:.2f}".format(sizeFile))
-                sizeFile = str(sizeFile) + ' MB'
-            elif lenSize >= 4 and lenSize <7:
-                sizeFile = sizeFile/1024
-                sizeFile = float("{0:.2f}".format(sizeFile))
-                sizeFile = str(sizeFile) + ' KB'
+            cekFileExist = getFileExist(namaFile, currentWorkingDirectory)
+            if cekFileExist:
+                # flash("Nama File Telah Terpakai")
+                print("Nama File Telah Terpakai")
             else:
-                sizeFile = str(sizeFile) + ' B'
-
-        insertFileDcc(namaFile, revision, sizeFile, extFile, permission, currentWorkingDirectory)
+                fileSplit = namaFile.split('.')
+                extFile = fileSplit[-1]
+                fileFolder = os.path.join(currentWorkingDirectory, namaFile)
+                file.save(fileFolder)
+                sizeFile = getFileSize(fileFolder)
+                insertFileDcc(namaFile, revision, sizeFile, extFile, permission, currentWorkingDirectory)
+                # flash("File "+namaFile+" Berhasil Dibuat")
+                print("File "+namaFile+" Berhasil Dibuat")
+        else:
+            # flash("Masukkan File Yang Akan Diupload")
+            print("Masukkan File Yang Akan Diupload")
 
 #
 def backDirectoryDcc():
@@ -345,13 +375,20 @@ def updateFolderDcc():
         folderId = request.form['folder_id']
         namaFolderOld = getNamaFolder(id, folderId)
         permission = getPermission(permissionInput)
-        updateFolder(id, folderId, namaFolderNew, permission, currentWorkingDirectory)
-        newPath = os.path.join(currentWorkingDirectory, namaFolderNew)
-        oldPath = os.path.join(currentWorkingDirectory, namaFolderOld)
-        strOldPath1 = '%' + namaFolderOld
-        strOldPath2 = '%' + namaFolderOld + '\\\\%'
-        os.rename(oldPath, newPath)
-        changePathFileFolder(oldPath, newPath, strOldPath1, strOldPath2)
+        cekFolderExist = getFolderExist(namaFolderNew, currentWorkingDirectory)
+        if cekFolderExist:
+            # flash("Nama Folder Telah Terpakai")
+            print("Nama Folder Telah Terpakai")
+        else:
+            updateFolder(id, folderId, namaFolderNew, permission, currentWorkingDirectory)
+            newPath = os.path.join(currentWorkingDirectory, namaFolderNew)
+            oldPath = os.path.join(currentWorkingDirectory, namaFolderOld)
+            strOldPath1 = '%' + namaFolderOld
+            strOldPath2 = '%' + namaFolderOld + '\\\\%'
+            os.rename(oldPath, newPath)
+            changePathFileFolder(oldPath, newPath, strOldPath1, strOldPath2)
+            # flash("Nama Folder Berhasil Diubah")
+            print("Nama Folder Berhasil Diubah")
 
 #
 def fetchDataFileDcc():
@@ -376,8 +413,15 @@ def updateFileDcc():
         fileId = request.form['file_id']
         namaFileOld, namaFileNew = getNamaFile(id, fileId, namaFile)
         permission = getPermission(permissionInput)
-        updateFile(id, fileId, namaFileNew, permission, currentWorkingDirectory)
-        os.rename(namaFileOld, namaFileNew)
+        cekFileExist = getFileExist(namaFileNew, currentWorkingDirectory)
+        if cekFileExist:
+            # flash("Nama File Telah Terpakai")
+            print("Nama File Telah Terpakai")
+        else:
+            updateFile(id, fileId, namaFileNew, permission, currentWorkingDirectory)
+            os.rename(namaFileOld, namaFileNew)
+            # flash("Nama File Berhasil Diubah")
+            print("Nama File Berhasil Diubah")
 
 #
 def deleteFolderDcc(id, folderId, folderName):
@@ -393,6 +437,7 @@ def deleteFolderDcc(id, folderId, folderName):
         os.rmdir(folderPath)
         # flash('folder removed')
         print('folder removed')
+
 #
 def deleteFileDcc(id, fileId, fileName):
     currentWorkingDirectory = getCwdDcc()

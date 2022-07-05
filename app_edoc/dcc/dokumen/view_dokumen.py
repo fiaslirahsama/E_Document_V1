@@ -97,6 +97,7 @@ def next_directory_dcc(item):
 
 #
 @bp_dokumen.route('/openfiledcc/<item>', methods=['GET', 'POST'])
+@login_required
 def open_file_dcc(item):
     roles = get_roles()
     if roles == 'managermetro':
@@ -106,17 +107,18 @@ def open_file_dcc(item):
         return render_template('dokumen/open_file_pdf.html', filename=file_name, filepath=file_path)
 
 #
-bp_dokumen.route('/fetchdatafolderdcc', methods=['GET', 'POST'])
+@bp_dokumen.route('/fetchdatafolderdcc', methods=['GET', 'POST'])
+@login_required
 def fetch_data_folder_dcc():
     roles = get_roles()
     if roles == 'managermetro':
         return abort(404)
     else:
-        id, folder_id, folder_name, current_working_directory, permission_departemen, option_departemen, permission_departemen, current_working_directory = controller_dokumen.fetchDataFolderDcc()
+        id, folder_id, folder_name, current_working_directory, permission_departemen, option_departemen = controller_dokumen.fetchDataFolderDcc()
         return render_template('dokumen/edit_folder.html',
                                 id = id,
                                 folder_id = folder_id, 
-                                folder_name_value=folder_name, 
+                                folder_name=folder_name, 
                                 option_departemen=option_departemen,
                                 permission_departemen = permission_departemen,
                                 current_working_directory = current_working_directory
@@ -124,6 +126,7 @@ def fetch_data_folder_dcc():
 
 #
 @bp_dokumen.route('/updatefolderdcc', methods=['GET', 'POST'])
+@login_required
 def update_folder_dcc():
     roles = get_roles()
     if roles == 'managermetro':
@@ -134,6 +137,7 @@ def update_folder_dcc():
 
 #
 @bp_dokumen.route('/fetchdatafiledcc', methods=['GET', 'POST'])
+@login_required
 def fetch_data_file_dcc():
     roles = get_roles()
     if roles == 'managermetro':
@@ -151,6 +155,7 @@ def fetch_data_file_dcc():
 
 #
 @bp_dokumen.route('/updatefiledcc', methods=['GET', 'POST'])
+@login_required
 def update_file_dcc():
     roles = get_roles()
     if roles == 'managermetro':
@@ -160,7 +165,8 @@ def update_file_dcc():
         return redirect(url_for('dokumen.distribusi_dokumen'))
 
 #
-bp_dokumen.route('/deletefolderdcc/<id>,<folder_id>,<folder_name>', methods=['GET','POST'])
+@bp_dokumen.route('/deletefolderdcc/<id>,<folder_id>,<folder_name>', methods=['GET','POST'])
+@login_required
 def delete_folder_dcc(id, folder_id, folder_name):
     roles = get_roles()
     if roles == 'managermetro':
@@ -170,7 +176,8 @@ def delete_folder_dcc(id, folder_id, folder_name):
         return redirect(url_for('dokumen.distribusi_dokumen'))
 
 #
-bp_dokumen.route('/deletefiledcc/<id>,<file_id>,<file_name>', methods=['GET','POST'])
+@bp_dokumen.route('/deletefiledcc/<id>,<file_id>,<file_name>', methods=['GET','POST'])
+@login_required
 def delete_file_dcc(id, file_id, file_name):
     roles = get_roles()
     if roles == 'managermetro':
